@@ -1,0 +1,37 @@
+name: "[npmjs] npm package - Attest"
+
+on:
+  push:
+    branches:
+      - main 
+
+# Permissions needed
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+jobs:
+  example:
+    runs-on: ledgerhq-shared-small
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14.x'
+
+      - name: Install dependencies
+        working-directory: npm
+        run: npm install
+
+      - name: Build the npm package
+        working-directory: npm
+        run: npm run build
+
+      - name: Attest
+        uses: LedgerHQ/actions-security/actions/attest@actions/attest-1
+        with:
+          subject-path: npm/dist

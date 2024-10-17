@@ -1,0 +1,64 @@
+name: "[npmjs] npm package - Sign (blob), Attest, and Push to JFrog Ledger"
+
+on:
+  push:
+    branches:
+      - main 
+
+# 1. Permissions needed to be defined inside the workflow file
+permissions:
+  contents: read
+  id-token: write  # Mandatory for attestations
+  attestations: write  # Mandatory for attestations
+
+jobs:
+  example:
+    runs-on: ledgerhq-shared-small
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14.x'
+
+      - name: Install dependencies
+        working-directory: npm
+        run: npm install
+
+      - name: Build the npm package
+        working-directory: npm
+        run: npm run build
+
+      # 2. Attestation action is used to attest the npm package
+      - name: Attest
+        uses: LedgerHQ/actions-security/actions/attest@actions/attest-1
+        with:
+          subject-path: npm/dist
+
+      - name: Sign
+        uses: LedgerHQ/actions-security/actions/sign-blob@actions/sign-blob-1
+        with:
+          path: npm/dist
+
+      - name: Login to JFrog Ledger
+        id: jfrog-login
+        uses: LedgerHQ/actions-security/actions/jfrog-login@actions/jfrog-login-1
+
+      # For the example purpose, the same package is pushed to the registry
+      - name: Only for the example - Delete existing package in Artifactory (if exists)
+        run: |
+          jfrog rt del "cybersec-npm-sandbox-green/examplepackage/-/examplepackage-0.1.0.tgz"
+
+      - name: Configure npm authentication
+        working-directory: npm
+        run: |
+          echo "registry=https://jfrog.ledgerlabs.net/artifactory/api/npm/cybersec-npm-sandbox-green/" > .npmrc
+          echo "//jfrog.ledgerlabs.net/artifactory/api/npm/cybersec-npm-sandbox-green/:_authToken=${{ steps.jfrog-login.outputs.oidc-token }}" >> .npmrc
+          echo "//jfrog.ledgerlabs.net/artifactory/api/npm/cybersec-npm-sandbox-green/:always-auth=true" >> .npmrc
+
+      - name: Publish package to JFrog Ledger with npm
+        working-directory: npm
+        run: |
+          npm publish
