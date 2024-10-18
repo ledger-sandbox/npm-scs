@@ -1,5 +1,5 @@
 {
-    "name": "ledger-sandbox/npm-scs",
+    "name": "ledger-sandbox-npm-scs",
     "version": "0.1.0",
     "description": "An example npm package for demonstration purposes.",
     "main": "index.js",
