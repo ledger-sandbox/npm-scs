@@ -42,7 +42,8 @@ jobs:
           subject-path: npm/dist
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: build-artifact 
-          path: npm/dist 
+          name: ledger-sandbox-npm-scs-0.1.0.tgz
+          path: npm/dist/ledger-sandbox-npm-scs-0.1.0.tgz
+          retention-days: 1
