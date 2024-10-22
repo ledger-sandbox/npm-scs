@@ -34,12 +34,18 @@ jobs:
       - name: Attest
         uses: LedgerHQ/actions-security/actions/attest@actions/attest-1
         with:
-          subject-path: npm/dist
+          subject-path: npm/dist/ledger-sandbox-npm-scs-0.1.0.tgz
       - name: Attest npmjs.com
         uses: LedgerHQ/actions-security/actions/attest@actions/attest-1
         with:
           subject-name: pkg:npm/ledger-sandbox-npm-scs@0.1.0
-          subject-path: npm/dist
+          subject-path: npm/dist/ledger-sandbox-npm-scs-0.1.0.tgz
+      
+      - name: Attest npmjs.com 2
+        uses: LedgerHQ/actions-security/actions/attest@actions/attest-1
+        with:
+          subject-name: pkg:npm/%40ledger-sandbox-npm-scs@0.1.0
+          subject-path: npm/dist/ledger-sandbox-npm-scs-0.1.0.tgz
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
