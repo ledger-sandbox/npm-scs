@@ -47,6 +47,9 @@ jobs:
           subject-name: pkg:npm/%40ledger-sandbox-npm-scs@0.1.0
           subject-path: npm/dist/ledger-sandbox-npm-scs-0.1.0.tgz
 
+      - run: |
+          npm install -g @npmcli/provenance-cli
+          provenance generate npm/dist/ledger-sandbox-npm-scs-0.1.0.tgz
       
       - run: sha256sum npm/dist/ledger-sandbox-npm-scs-0.1.0.tgz
 
