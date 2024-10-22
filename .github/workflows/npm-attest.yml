@@ -35,15 +35,14 @@ jobs:
         uses: LedgerHQ/actions-security/actions/attest@actions/attest-1
         with:
           subject-path: npm/dist
+      - name: Attest npmjs.com
+        uses: LedgerHQ/actions-security/actions/attest@actions/attest-1
+        with:
+          subject-name: pkg:npm/ledger-sandbox-npm-scs@0.1.0
+          subject-path: npm/dist
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact 
           path: npm/dist 
-
-      - name: Check object
-        run: |
-          cat << OBJECT
-          ${{ toJson(github) }}
-          OBJECT
